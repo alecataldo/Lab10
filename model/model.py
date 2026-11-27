@@ -1,4 +1,3 @@
-from database.dao import DAO
 import networkx as nx
 
 class Model:
