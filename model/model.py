@@ -42,7 +42,7 @@ class Model:
         for coppia,importi in collegamenti.items():
             media = sum(importi) / len(importi)
 
-            if media > threshold:
+            if media >= threshold:
                 id1, id2 = coppia
                 self.G.add_edge(self._nodes[id1], self._nodes[id2], weight = media)
 
