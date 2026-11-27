@@ -1,4 +1,7 @@
 import networkx as nx
+from database.dao import DAO
+from model.bonifico import Bonifico
+
 
 class Model:
     def __init__(self):
@@ -12,6 +15,41 @@ class Model:
         importo medio per bonifico >= threshold (euro)
         """
         # TODO
+        #Recupero filiali e bonifici
+        self._nodes = DAO.get_all_filiali()
+        self._edges = DAO.read_all_bonifici()
+
+        #Svuoto il grafo
+        self.G.clear()
+
+        #Aggiungo le filiali come nodi
+        for filiale in self._nodes.values():
+            self.G.add_node(filiale)
+
+        #Trovo i collegamenti tra filiali
+        collegamenti = {}
+
+        for bonifico in self._edges.values():
+            coppia = tuple(sorted(
+                (bonifico.id_filiale_origine, bonifico.id_filiale_destinazione)))
+
+            if coppia not in collegamenti:
+                collegamenti[coppia] = []
+
+            collegamenti[coppia].append(bonifico.importo)
+
+        #Calcolo le medi e inserisco gli archi
+        for coppia,importi in collegamenti.items():
+            media = sum(importi) / len(importi)
+
+            if media > threshold:
+                id1, id2 = coppia
+                self.G.add_edge(self._nodes[id1], self._nodes[id2], weight = media)
+
+
+
+
+
 
     def get_num_edges(self):
         """
@@ -19,6 +57,8 @@ class Model:
         :return: numero di edges del grafo
         """
         # TODO
+        #Networkx ha una funzione per farlo
+        return self.G.number_of_edges()
 
     def get_num_nodes(self):
         """
@@ -26,6 +66,8 @@ class Model:
         :return: numero di nodi del grafo
         """
         # TODO
+        #Networkx ha una funzione per farlo
+        return self.G.number_of_nodes()
 
     def get_all_edges(self):
         """
@@ -33,3 +75,5 @@ class Model:
         :return: gli edges del grafo con gli attributi (il weight)
         """
         # TODO
+        #Networkx ha una funzione per farlo
+        return self.G.edges(data=True)

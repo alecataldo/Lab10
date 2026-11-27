@@ -22,11 +22,19 @@ class DAO:
         try:
             cursor.execute(query)
             for row in cursor:
-                bonifico = Bonifico(
-                    id=row["id"],id_filiale_origine=row["id_filiale_origine"],id_filiale_destinazione=row["id_filiale_destino"])
+                bonifico = Bonifico(id=row["id"],
+    id_banca=row["id_banca"],
+    codice_operazione=row["codice_operazione"],
+    id_filiale_origine=row["id_filiale_origine"],
+    id_filiale_destinazione=row["id_filiale_destinazione"],
+    data_disposizione=row["data_disposizione"],
+    commissione=row["commissione"],
+    data_accredito=row["data_accredito"],
+    importo=row["importo"]
+    )
                 result[bonifico.id] = bonifico
         except Exception as e:
-            print(f"Errore durante la query read_all_escursioni: {e}")
+            print(f"Errore durante la query read_all_bonifici: {e}")
             result = None
         finally:
             cursor.close()
@@ -47,8 +55,14 @@ class DAO:
         try:
             cursor.execute(query)
             for row in cursor:
-                filiale = Filiale(
-                    id=row["id"],nome = row["nome"],provincia=row["provincia"])
+                filiale = Filiale(  id=row["id"],
+    codice=row["codice"],
+    nome=row["nome"],
+    citta=row["citta"],
+    provincia=row["provincia"],
+    latitudine=row["latitudine"],
+    longitudine=row["longitudine"]
+)
                 result[filiale.id] = filiale
         except Exception as e:
             print(f"Errore durante la query get_alla_filiali: {e}")
